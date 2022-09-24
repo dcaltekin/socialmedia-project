@@ -1,34 +1,60 @@
-import React from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { auth } from "../config/firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { signOut } from "firebase/auth";
+import { AiOutlineDown } from "react-icons/ai";
 
 function Navbar() {
   console.log(auth.currentUser?.displayName);
   const [user] = useAuthState(auth);
   const logOut = async () => {
     await signOut(auth);
+    setCheck(false);
+  };
+  const [check, setCheck] = useState(false);
+  const dropdownControl = () => {
+    setCheck(!check);
   };
   return (
     <div className="bg-gray-200">
-      <div className="flex justify-between items-center container mx-auto gap-x-2 p-3">
-        <div className="links">
-          <Link to="/"> Home</Link>
-          <Link to="/login"> Login</Link>
+      <div className="flex justify-around items-center container mx-auto gap-x-2 p-3">
+        <div className="flex gap-x-2">
+          <Link to="/">Home</Link>
+          {!user ? (
+            <Link to="/login">Login</Link>
+          ) : (
+            <Link to="/createpost">Create Post</Link>
+          )}
         </div>
 
-        <div className="flex items-center gap-x-4">
+        <div className="flex items-center gap-x-2 justify-center">
           {user && (
             <>
-              <span>{user?.displayName}</span>
-              <img className="rounded-full h-14" src={user?.photoURL || ""} />
-              <button
-                className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-                onClick={logOut}
-              >
-                Logout
+              <img
+                className="rounded-full h-14"
+                src={user.photoURL || ""}
+                alt="profile"
+              />
+              <button onClick={dropdownControl}>
+                <AiOutlineDown size={20} />
               </button>
+              <div
+                className={
+                  !check
+                    ? "hidden"
+                    : "flex flex-col absolute bg-gray-300 mt-44 gap-y-2  p-4 justify-center items-center transition-all z-50"
+                }
+              >
+                {" "}
+                <span>{user.displayName}</span>
+                <button
+                  className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                  onClick={logOut}
+                >
+                  Logout
+                </button>
+              </div>
             </>
           )}
         </div>

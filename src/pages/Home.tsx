@@ -6,7 +6,7 @@ function Home() {
   const [user] = useAuthState(auth);
   return (
     <div className="text-center mt-4">
-      {user ? <div>Welcome {user?.displayName}</div> : <div>Home Page</div>}
+      {user ? <div>Welcome {user.displayName}</div> : <div>Home Page</div>}
     </div>
   );
 }
