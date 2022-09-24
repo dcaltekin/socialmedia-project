@@ -6,7 +6,6 @@ import { signOut } from "firebase/auth";
 import { AiOutlineDown, AiOutlineUp } from "react-icons/ai";
 
 function Navbar() {
-  console.log(auth.currentUser?.displayName);
   const [user] = useAuthState(auth);
   const logOut = async () => {
     await signOut(auth);
