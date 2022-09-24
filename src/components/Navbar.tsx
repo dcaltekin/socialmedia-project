@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { auth } from "../config/firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { signOut } from "firebase/auth";
-import { AiOutlineDown } from "react-icons/ai";
+import { AiOutlineDown, AiOutlineUp } from "react-icons/ai";
 
 function Navbar() {
   console.log(auth.currentUser?.displayName);
@@ -11,11 +11,15 @@ function Navbar() {
   const logOut = async () => {
     await signOut(auth);
     setCheck(false);
+    setIcon(false);
   };
   const [check, setCheck] = useState(false);
+  const [icon, setIcon] = useState(false);
   const dropdownControl = () => {
     setCheck(!check);
+    setIcon(!icon);
   };
+
   return (
     <div className="bg-gray-200">
       <div className="flex justify-around items-center container mx-auto gap-x-2 p-3">
@@ -27,7 +31,7 @@ function Navbar() {
             <Link to="/createpost">Create Post</Link>
           )}
         </div>
-
+        <div></div>
         <div className="flex items-center gap-x-2 justify-center">
           {user && (
             <>
@@ -37,7 +41,11 @@ function Navbar() {
                 alt="profile"
               />
               <button onClick={dropdownControl}>
-                <AiOutlineDown size={20} />
+                {!icon ? (
+                  <AiOutlineDown size={20} />
+                ) : (
+                  <AiOutlineUp size={20} />
+                )}
               </button>
               <div
                 className={
