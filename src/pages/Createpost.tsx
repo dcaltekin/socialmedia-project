@@ -6,7 +6,7 @@ import { addDoc, collection } from "firebase/firestore";
 import { db, auth } from "../config/firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 
-interface CreateData {
+export interface CreateData {
   title: string;
   description: string;
 }
@@ -26,7 +26,6 @@ function Createpost() {
   });
 
   const refPosts = collection(db, "posts");
-
   const onCreatePost = async (data: CreateData) => {
     await addDoc(refPosts, {
       title: data.title,
@@ -35,6 +34,7 @@ function Createpost() {
       userId: user?.uid,
     });
   };
+
   return (
     <div>
       <form
@@ -54,7 +54,7 @@ function Createpost() {
           {...register("description")}
         />
         <p className="text-red-600">{errors.description?.message}</p>
-        <input type="submit" />
+        <button>Gönder</button>
       </form>
     </div>
   );
