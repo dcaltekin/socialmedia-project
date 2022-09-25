@@ -4,6 +4,7 @@ import {
   collection,
   query,
   where,
+  deleteDoc,
   doc,
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
@@ -18,6 +19,7 @@ interface Props {
 
 interface Like {
   userId: string;
+  likeId: string;
 }
 
 export const Post = (props: Props) => {
@@ -29,20 +31,41 @@ export const Post = (props: Props) => {
 
   const likesDoc = query(refLikes, where("postId", "==", post.id));
   const addLike = async () => {
-    await addDoc(refLikes, {
+    const newDoc = await addDoc(refLikes, {
       userId: user?.uid,
       postId: post.id,
     });
     if (user) {
       setLikes((prev) =>
-        prev ? [...prev, { userId: user?.uid }] : [{ userId: user?.uid }]
+        prev
+          ? [...prev, { userId: user?.uid, likeId: newDoc.id }]
+          : [{ userId: user?.uid, likeId: newDoc.id }]
+      );
+    }
+  };
+
+  const removeLike = async () => {
+    const deleteLikeQuery = query(
+      refLikes,
+      where("postId", "==", post.id),
+      where("userId", "==", user?.uid)
+    );
+    const likeToDeleteData = await getDocs(deleteLikeQuery);
+    const likeId = likeToDeleteData.docs[0].id;
+    const deleteLike = doc(db, "likes", likeId);
+    await deleteDoc(deleteLike);
+    if (user) {
+      setLikes(
+        (prev) => prev && prev?.filter((like) => like.likeId !== likeId)
       );
     }
   };
 
   const getLikes = async () => {
     const data = await getDocs(likesDoc);
-    setLikes(data.docs.map((post) => ({ userId: post.data().userId })));
+    setLikes(
+      data.docs.map((post) => ({ userId: post.data().userId, likeId: post.id }))
+    );
   };
 
   const hasUserLiked = likes?.find((like) => like.userId === user?.uid);
@@ -60,7 +83,7 @@ export const Post = (props: Props) => {
       </div>
       <div>
         <p>Username: {post.username}</p>
-        <button onClick={addLike}>
+        <button onClick={hasUserLiked ? removeLike : addLike}>
           {hasUserLiked ? (
             <FcLike size={22} />
           ) : (
