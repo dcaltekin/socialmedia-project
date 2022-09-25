@@ -33,6 +33,11 @@ export const Post = (props: Props) => {
       userId: user?.uid,
       postId: post.id,
     });
+    if (user) {
+      setLikes((prev) =>
+        prev ? [...prev, { userId: user?.uid }] : [{ userId: user?.uid }]
+      );
+    }
   };
 
   const getLikes = async () => {
