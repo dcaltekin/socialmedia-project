@@ -50,7 +50,7 @@ function Navbar() {
                 className={
                   !check
                     ? "hidden"
-                    : "flex flex-col absolute bg-gray-300 mt-44 gap-y-2  p-4 justify-center items-center transition-all z-50"
+                    : "flex flex-col absolute bg-gray-300 mt-48 md:mt-44 gap-y-2  p-4 justify-center items-center transition-all z-50"
                 }
               >
                 {" "}
