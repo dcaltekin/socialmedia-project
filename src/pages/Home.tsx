@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, db } from "../config/firebase";
-import { getDocs, collection, Timestamp } from "firebase/firestore";
+import { getDocs, collection, orderBy, query } from "firebase/firestore";
 import Createpost from "./Createpost";
 import { Post } from "./Post";
 
@@ -20,9 +20,12 @@ export const Home = () => {
   const [user] = useAuthState(auth);
   const refPosts = collection(db, "posts");
   const getPost = async () => {
-    const data = await getDocs(refPosts);
+    const data = await getDocs(query(refPosts, orderBy("date", "desc")));
     setPostLists(
-      data.docs.map((post) => ({ ...post.data(), id: post.id })) as Post[]
+      data.docs.map((post) => ({
+        ...post.data(),
+        id: post.id,
+      })) as Post[]
     );
   };
   useEffect(() => {
