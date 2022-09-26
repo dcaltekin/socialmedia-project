@@ -2,13 +2,15 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, Timestamp } from "firebase/firestore";
 import { db, auth } from "../config/firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
+import { useNavigate } from "react-router-dom";
 
 export interface CreateData {
   title: string;
   description: string;
+  date: string;
 }
 
 function Createpost() {
@@ -24,7 +26,9 @@ function Createpost() {
   } = useForm<CreateData>({
     resolver: yupResolver(schema),
   });
+  const dateTime = new Date(Date.now()).toLocaleString("tr-TR", {});
 
+  const navigate = useNavigate();
   const refPosts = collection(db, "posts");
   const onCreatePost = async (data: CreateData) => {
     await addDoc(refPosts, {
@@ -32,7 +36,9 @@ function Createpost() {
       description: data.description,
       username: user?.displayName,
       userId: user?.uid,
+      date: dateTime,
     });
+    navigate("/");
   };
 
   return (

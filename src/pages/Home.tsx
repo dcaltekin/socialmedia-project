@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, db } from "../config/firebase";
-import { getDocs, collection } from "firebase/firestore";
+import { getDocs, collection, Timestamp } from "firebase/firestore";
 import Createpost from "./Createpost";
 import { Post } from "./Post";
 
@@ -11,6 +11,7 @@ export interface Post {
   title: string;
   username: string;
   description: string;
+  date: string;
 }
 
 export const Home = () => {
@@ -28,13 +29,12 @@ export const Home = () => {
     getPost();
   }, []);
   console.log(postLists);
-
   return (
     <div className="text-center mt-4">
       {user ? <div>Welcome {user.displayName}</div> : <div>Home Page</div>}
-      <Createpost />
       <div>
         <h2 className="text-red-600">PAYLAŞILAN İÇERİKLER</h2>
+        {postLists?.length == 0 && <div>There is no post yet!</div>}
         {postLists?.map((post, index) => (
           <div className="mt-8" key={index}>
             <Post post={post} />

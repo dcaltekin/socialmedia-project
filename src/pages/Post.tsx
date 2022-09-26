@@ -83,6 +83,7 @@ export const Post = (props: Props) => {
       </div>
       <div>
         <p>Username: {post.username}</p>
+        <p>Time: {post.date}</p>
         <button onClick={hasUserLiked ? removeLike : addLike}>
           {hasUserLiked ? (
             <FcLike size={22} />
